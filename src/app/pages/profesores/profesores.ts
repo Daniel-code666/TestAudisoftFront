@@ -14,6 +14,7 @@ import { ProfessorFormModalComponent } from '../../features/profesores/component
 import { ProfessorCreate } from '../../features/profesores/models/professor-create.model';
 import { ProfessorUpdate } from '../../features/profesores/models/professor-update.model';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal';
+import { ShowSuccessAlert } from '../../core/utils/alert.utils';
 
 @Component({
   selector: 'app-profesores',
@@ -100,6 +101,7 @@ export class ProfesoresComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
+      await ShowSuccessAlert('Registro creado', 'El profesor ha sido creado exitosamente.');
       this.professors_store.ClearMessages();
     }
   }

@@ -15,6 +15,7 @@ import { GradeCreate } from '../../features/notas/models/grade-create.model';
 import { GradeUpdate } from '../../features/notas/models/grade-update.model';
 import { SearchableSelectItem } from '../../shared/components/searchable-text/searchable-select';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal';
+import { ShowSuccessAlert } from '../../core/utils/alert.utils';
 
 @Component({
   selector: 'app-notas',
@@ -105,6 +106,7 @@ export class NotasComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
+      await ShowSuccessAlert('Regsitro creado', 'La nota ha sido creada exitosamente.');
       this.grades_store.ClearMessages();
     }
   }

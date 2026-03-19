@@ -14,6 +14,7 @@ import { StudentFormModalComponent } from '../../features/estudiantes/components
 import { StudentCreate } from '../../features/estudiantes/models/student-create.model';
 import { StudentUpdate } from '../../features/estudiantes/models/student-update.model';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal';
+import { ShowSuccessAlert } from '../../core/utils/alert.utils';
 
 @Component({
   selector: 'app-estudiantes',
@@ -100,6 +101,7 @@ export class EstudiantesComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
+      await ShowSuccessAlert('Regsitro creado', 'El estudiante ha sido creado exitosamente.');
       this.students_store.ClearMessages();
     }
   }
