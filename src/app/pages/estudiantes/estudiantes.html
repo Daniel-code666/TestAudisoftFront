@@ -1,0 +1,282 @@
+<div class="container-fluid">
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Estudiantes</h4>
+
+          <button
+            type="button"
+            class="btn btn-light btn-sm"
+            (click)="OpenCreateModal()">
+            Crear estudiante
+          </button>
+        </div>
+
+        <div class="card-body">
+          <form class="row g-3" (ngSubmit)="OnApplyFilters()">
+            <div class="col-12 col-md-4">
+              <label for="first_name" class="form-label">Nombre</label>
+              <input
+                id="first_name"
+                type="text"
+                class="form-control"
+                [ngModel]="students_store.first_name_filter()"
+                (ngModelChange)="students_store.SetFirstNameFilter($event)"
+                name="first_name" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="last_name" class="form-label">Apellido</label>
+              <input
+                id="last_name"
+                type="text"
+                class="form-control"
+                [ngModel]="students_store.last_name_filter()"
+                (ngModelChange)="students_store.SetLastNameFilter($event)"
+                name="last_name" />
+            </div>
+
+            <div class="col-12 col-md-4">
+              <label for="email" class="form-label">Correo</label>
+              <input
+                id="email"
+                type="text"
+                class="form-control"
+                [ngModel]="students_store.email_filter()"
+                (ngModelChange)="students_store.SetEmailFilter($event)"
+                name="email" />
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+              <button type="submit" class="btn btn-dark">
+                Buscar
+              </button>
+
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="OnResetFilters()">
+                Limpiar
+              </button>
+            </div>
+          </form>
+
+          <div class="row mt-4 align-items-center g-3">
+            <div class="col-12 col-md-6">
+              <strong>{{ students_store.results_label() }}</strong>
+            </div>
+
+            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-2">
+              <label for="page_size" class="mb-0">Cantidad por página</label>
+
+              <select
+                id="page_size"
+                class="form-select w-auto"
+                [value]="students_store.page_size()"
+                (change)="OnPageSizeChange($event)">
+                <option [value]="5">5</option>
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          @if (students_store.list_error()) {
+            <div class="alert alert-danger mt-3 mb-0">
+              {{ students_store.list_error() }}
+            </div>
+          }
+
+          <div class="table-responsive mt-3 position-relative">
+            @if (is_loading()) {
+              <div class="loading-overlay d-flex align-items-center justify-content-center">
+                <div class="spinner-border text-dark" role="status">
+                  <span class="visually-hidden">Cargando...</span>
+                </div>
+              </div>
+            }
+
+            @if (students_store.save_success()) {
+              <div class="alert alert-success mt-3">
+                {{ students_store.save_success() }}
+              </div>
+            }
+
+            @if (students_store.save_error()) {
+              <div class="alert alert-danger mt-3">
+                {{ students_store.save_error() }}
+              </div>
+            }
+
+            <table class="table table-bordered table-hover align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Apellido</th>
+                  <th>Correo</th>
+                  <th class="text-center">Detalle</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (students_store.has_items()) {
+                  @for (student of students_store.items(); track student.id) {
+                    <tr>
+                      <td>{{ student.id }}</td>
+                      <td>{{ student.firstName || '-' }}</td>
+                      <td>{{ student.lastName || '-' }}</td>
+                      <td>{{ student.email || '-' }}</td>
+                      <td class="text-center">
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-dark"
+                          (click)="OnShowDetail(student.id)">
+                          Ver notas
+                        </button>
+                      </td>
+                      <td class="text-center">
+                        <div class="d-flex justify-content-center gap-2">
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-warning"
+                            (click)="OpenEditModal(student.id)">
+                            Editar
+                          </button>
+                          <button
+                            type="button"
+                            class="btn btn-sm btn-danger"
+                            (click)="OpenDeleteModal(student.id)">
+                            Eliminar
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
+                  <tr>
+                    <td colspan="6" class="text-center py-4">
+                      No hay registros para mostrar.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          @if (students_store.total_pages() > 1) {
+            <nav class="mt-4">
+              <ul class="pagination mb-0 flex-wrap">
+                <li class="page-item" [class.disabled]="students_store.page_number() === 1">
+                  <button
+                    class="page-link"
+                    type="button"
+                    (click)="OnPageChange(students_store.page_number() - 1)">
+                    Anterior
+                  </button>
+                </li>
+
+                @for (page of pages(); track page) {
+                  <li
+                    class="page-item"
+                    [class.active]="page === students_store.page_number()">
+                    <button
+                      class="page-link"
+                      type="button"
+                      (click)="OnPageChange(page)">
+                      {{ page }}
+                    </button>
+                  </li>
+                }
+
+                <li
+                  class="page-item"
+                  [class.disabled]="students_store.page_number() === students_store.total_pages()">
+                  <button
+                    class="page-link"
+                    type="button"
+                    (click)="OnPageChange(students_store.page_number() + 1)">
+                    Siguiente
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12" *ngIf="students_store.selected_student() as selected_student">
+      <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+          <h5 class="mb-0">
+            Notas de {{ selected_student.firstName || '' }} {{ selected_student.lastName || '' }}
+          </h5>
+        </div>
+
+        <div class="card-body">
+          @if (students_store.detail_error()) {
+            <div class="alert alert-danger">
+              {{ students_store.detail_error() }}
+            </div>
+          }
+
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID Nota</th>
+                  <th>Nombre</th>
+                  <th>Calificación</th>
+                  <th>Profesor</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (students_store.selected_student_grades().length > 0) {
+                  @for (grade of students_store.selected_student_grades(); track grade.id) {
+                    <tr>
+                      <td>{{ grade.id }}</td>
+                      <td>{{ grade.name || '-' }}</td>
+                      <td>{{ grade.gradeValue }}</td>
+                      <td>{{ grade.professorFullName || '-' }}</td>
+                    </tr>
+                  }
+                } @else {
+                  <tr>
+                    <td colspan="4" class="text-center py-4">
+                      Este estudiante no tiene notas registradas.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-student-form-modal
+  [is_open]="is_form_modal_open()"
+  [mode]="students_store.modal_mode()"
+  [student]="students_store.selected_student()"
+  [save_error]="students_store.save_error()"
+  [save_success]="students_store.save_success()"
+  (close)="CloseFormModal()"
+  (create)="OnCreateStudent($event)"
+  (update)="OnUpdateStudent($event)">
+</app-student-form-modal>
+
+<app-confirm-modal
+  [is_open]="is_delete_modal_open()"
+  [title]="'Eliminar estudiante'"
+  [message]="'¿Desea eliminar este estudiante?'"
+  [confirm_text]="'Eliminar'"
+  [cancel_text]="'Cancelar'"
+  [confirm_button_class]="'btn btn-danger'"
+  (close)="CloseDeleteModal()"
+  (confirm)="ConfirmDeleteStudent()">
+</app-confirm-modal>

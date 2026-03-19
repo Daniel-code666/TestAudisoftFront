@@ -1,0 +1,39 @@
+<div class="layout-container">
+  <header class="topbar">
+    <button type="button" class="menu-button" (click)="ToggleSidebar()">
+      ☰
+    </button>
+
+    <div class="topbar-title">
+      TestAudisoft
+    </div>
+  </header>
+
+  <aside class="sidebar" [class.sidebar-open]="sidebar_open()">
+    <nav class="sidebar-nav">
+      <a routerLink="/estudiantes" routerLinkActive="active-link" class="sidebar-link" (click)="CloseSidebar()">
+        Estudiantes
+      </a>
+
+      <a routerLink="/profesores" routerLinkActive="active-link" class="sidebar-link" (click)="CloseSidebar()">
+        Profesores
+      </a>
+
+      <a routerLink="/notas" routerLinkActive="active-link" class="sidebar-link" (click)="CloseSidebar()">
+        Notas
+      </a>
+    </nav>
+  </aside>
+
+  @if (sidebar_open()) {
+  <div class="sidebar-backdrop" (click)="CloseSidebar()"></div>
+  }
+
+  <main class="page-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  @if (is_loading()) {
+  <div class="global-loading-bar"></div>
+  }
+</div>

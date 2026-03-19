@@ -1,0 +1,106 @@
+@if (is_open) {
+  <div class="modal-backdrop-custom"></div>
+
+  <div class="modal d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">
+            @if (mode === 'create') {
+              Crear profesor
+            } @else {
+              Editar profesor
+            }
+          </h5>
+
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Close"
+            (click)="OnClose()"></button>
+        </div>
+
+        <div class="modal-body">
+          @if (save_error) {
+            <div class="alert alert-danger">
+              {{ save_error }}
+            </div>
+          }
+
+          @if (save_success) {
+            <div class="alert alert-success">
+              {{ save_success }}
+            </div>
+          }
+
+          <form [formGroup]="form" class="row g-3">
+            <div class="col-12">
+              <label for="first_name" class="form-label">Nombre</label>
+              <input
+                id="first_name"
+                type="text"
+                class="form-control"
+                formControlName="first_name" />
+
+              @if (form.controls.first_name.touched && form.controls.first_name.invalid) {
+                <div class="text-danger small mt-1">
+                  El nombre es obligatorio.
+                </div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label for="last_name" class="form-label">Apellido</label>
+              <input
+                id="last_name"
+                type="text"
+                class="form-control"
+                formControlName="last_name" />
+
+              @if (form.controls.last_name.touched && form.controls.last_name.invalid) {
+                <div class="text-danger small mt-1">
+                  El apellido es obligatorio.
+                </div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label for="email_modal" class="form-label">Correo</label>
+              <input
+                id="email_modal"
+                type="email"
+                class="form-control"
+                formControlName="email" />
+
+              @if (form.controls.email.touched && form.controls.email.invalid) {
+                <div class="text-danger small mt-1">
+                  Debe ingresar un correo válido.
+                </div>
+              }
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="OnClose()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-dark"
+            (click)="OnSubmit()">
+            @if (mode === 'create') {
+              Guardar
+            } @else {
+              Actualizar
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

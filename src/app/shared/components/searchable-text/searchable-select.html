@@ -1,0 +1,55 @@
+<div class="searchable-select position-relative">
+  <label class="form-label">
+    {{ label }}
+    @if (required) {
+      <span class="text-danger">*</span>
+    }
+  </label>
+
+  <div class="input-group">
+    <input
+      type="text"
+      class="form-control"
+      [placeholder]="placeholder"
+      [ngModel]="display_text()"
+      (ngModelChange)="OnInputChange($event)"
+      (focus)="Open()" />
+
+    <button
+      type="button"
+      class="btn btn-outline-secondary"
+      (click)="Toggle()">
+      Buscar
+    </button>
+
+    @if (selected_id > 0) {
+      <button
+        type="button"
+        class="btn btn-outline-danger"
+        (click)="ClearSelection()">
+        Limpiar
+      </button>
+    }
+  </div>
+
+  @if (is_open()) {
+    <div class="searchable-dropdown card shadow-sm mt-1">
+      <div class="list-group list-group-flush">
+        @if (filtered_items().length > 0) {
+          @for (item of filtered_items(); track item.id) {
+            <button
+              type="button"
+              class="list-group-item list-group-item-action text-start"
+              (click)="SelectItem(item.id)">
+              {{ item.label }}
+            </button>
+          }
+        } @else {
+          <div class="list-group-item text-muted">
+            {{ empty_text }}
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

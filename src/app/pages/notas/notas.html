@@ -1,0 +1,173 @@
+<div class="container-fluid">
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">Notas</h4>
+
+          <button type="button" class="btn btn-light btn-sm" (click)="OpenCreateModal()">
+            Crear nota
+          </button>
+        </div>
+
+        <div class="card-body">
+          <form class="row g-3" (ngSubmit)="OnApplyFilters()">
+            <div class="col-12 col-md-4">
+              <label for="name" class="form-label">Nombre</label>
+              <input id="name" type="text" class="form-control" [ngModel]="grades_store.name_filter()"
+                (ngModelChange)="grades_store.SetNameFilter($event)" name="name" />
+            </div>
+
+            <div class="col-12 col-md-2">
+              <label for="grade" class="form-label">Nota</label>
+              <input id="grade" type="number" step="0.01" class="form-control" [ngModel]="grades_store.grade_filter()"
+                (ngModelChange)="grades_store.SetGradeFilter($event)" name="grade" />
+            </div>
+
+            <div class="col-12 d-flex gap-2">
+              <button type="submit" class="btn btn-dark">
+                Buscar
+              </button>
+
+              <button type="button" class="btn btn-outline-secondary" (click)="OnResetFilters()">
+                Limpiar
+              </button>
+            </div>
+          </form>
+
+          <div class="row mt-4 align-items-center g-3">
+            <div class="col-12 col-md-6">
+              <strong>{{ grades_store.results_label() }}</strong>
+            </div>
+
+            <div class="col-12 col-md-6 d-flex justify-content-md-end align-items-center gap-2">
+              <label for="page_size" class="mb-0">Cantidad por página</label>
+
+              <select id="page_size" class="form-select w-auto" [value]="grades_store.page_size()"
+                (change)="OnPageSizeChange($event)">
+                <option [value]="5">5</option>
+                <option [value]="10">10</option>
+                <option [value]="20">20</option>
+                <option [value]="50">50</option>
+              </select>
+            </div>
+          </div>
+
+          @if (grades_store.list_error()) {
+          <div class="alert alert-danger mt-3 mb-0">
+            {{ grades_store.list_error() }}
+          </div>
+          }
+
+          <div class="table-responsive mt-3 position-relative">
+            @if (is_loading()) {
+            <div class="loading-overlay d-flex align-items-center justify-content-center">
+              <div class="spinner-border text-dark" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
+            </div>
+            }
+
+            @if (grades_store.save_success()) {
+              <div class="alert alert-success mt-3">
+                {{ grades_store.save_success() }}
+              </div>
+            }
+
+            @if (grades_store.save_error()) {
+              <div class="alert alert-danger mt-3">
+                {{ grades_store.save_error() }}
+              </div>
+            }
+
+            <table class="table table-bordered table-hover align-middle mb-0">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>Calificación</th>
+                  <th>Estudiante</th>
+                  <th>Profesor</th>
+                  <th class="text-center">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (grades_store.has_items()) {
+                @for (grade of grades_store.items(); track grade.id) {
+                <tr>
+                  <td>{{ grade.id }}</td>
+                  <td>{{ grade.name || '-' }}</td>
+                  <td>{{ grade.gradeValue }}</td>
+                  <td>{{ grade.studentFullName || '-' }}</td>
+                  <td>{{ grade.professorFullName || '-' }}</td>
+                  <td class="text-center">
+                    <div class="d-flex justify-content-center gap-2">
+                      <button type="button" class="btn btn-sm btn-warning" (click)="OpenEditModal(grade.id)">
+                      Editar
+                      </button>
+                      <button type="button" class="btn btn-sm btn-danger" (click)="OpenDeleteModal(grade.id)">
+                        Eliminar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                }
+                } @else {
+                <tr>
+                  <td colspan="6" class="text-center py-4">
+                    No hay registros para mostrar.
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          @if (grades_store.total_pages() > 1) {
+          <nav class="mt-4">
+            <ul class="pagination mb-0 flex-wrap">
+              <li class="page-item" [class.disabled]="grades_store.page_number() === 1">
+                <button class="page-link" type="button" (click)="OnPageChange(grades_store.page_number() - 1)">
+                  Anterior
+                </button>
+              </li>
+
+              @for (page of pages(); track page) {
+              <li class="page-item" [class.active]="page === grades_store.page_number()">
+                <button class="page-link" type="button" (click)="OnPageChange(page)">
+                  {{ page }}
+                </button>
+              </li>
+              }
+
+              <li class="page-item" [class.disabled]="grades_store.page_number() === grades_store.total_pages()">
+                <button class="page-link" type="button" (click)="OnPageChange(grades_store.page_number() + 1)">
+                  Siguiente
+                </button>
+              </li>
+            </ul>
+          </nav>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-grade-form-modal [is_open]="is_form_modal_open()" [mode]="grades_store.modal_mode()"
+  [grade]="grades_store.selected_grade()" [students]="student_options()" [professors]="professor_options()"
+  [catalogs_error]="grades_store.catalogs_error()" [save_error]="grades_store.save_error()"
+  [save_success]="grades_store.save_success()" (close)="CloseFormModal()" (create)="OnCreateGrade($event)"
+  (update)="OnUpdateGrade($event)">
+</app-grade-form-modal>
+
+<app-confirm-modal
+  [is_open]="is_delete_modal_open()"
+  [title]="'Eliminar nota'"
+  [message]="'¿Desea eliminar esta nota?'"
+  [confirm_text]="'Eliminar'"
+  [cancel_text]="'Cancelar'"
+  [confirm_button_class]="'btn btn-danger'"
+  (close)="CloseDeleteModal()"
+  (confirm)="ConfirmDeleteGrade()">
+</app-confirm-modal>

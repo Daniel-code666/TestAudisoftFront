@@ -1,0 +1,129 @@
+@if (is_open) {
+  <div class="modal-backdrop-custom"></div>
+
+  <div class="modal d-block" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title">
+            @if (mode === 'create') {
+              Crear nota
+            } @else {
+              Editar nota
+            }
+          </h5>
+
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            aria-label="Close"
+            (click)="OnClose()"></button>
+        </div>
+
+        <div class="modal-body">
+          @if (catalogs_error) {
+            <div class="alert alert-danger">
+              {{ catalogs_error }}
+            </div>
+          }
+
+          @if (save_error) {
+            <div class="alert alert-danger">
+              {{ save_error }}
+            </div>
+          }
+
+          @if (save_success) {
+            <div class="alert alert-success">
+              {{ save_success }}
+            </div>
+          }
+
+          <form [formGroup]="form" class="row g-3">
+            <div class="col-12">
+              <label for="name" class="form-label">Nombre</label>
+              <input
+                id="name"
+                type="text"
+                class="form-control"
+                formControlName="name" />
+            </div>
+
+            <div class="col-12">
+              <label for="grade_value" class="form-label">Calificación</label>
+              <input
+                id="grade_value"
+                type="number"
+                step="0.01"
+                class="form-control"
+                formControlName="grade_value" />
+
+              @if (form.controls.grade_value.touched && form.controls.grade_value.invalid) {
+                <div class="text-danger small mt-1">
+                  La calificación es obligatoria y debe estar entre 0 y 5.
+                </div>
+              }
+            </div>
+
+            <div class="col-12">
+              <app-searchable-select
+                label="Estudiante"
+                placeholder="Buscar estudiante..."
+                [items]="students"
+                [selected_id]="form.controls.student_id.value"
+                [required]="true"
+                [empty_text]="'No se encontraron estudiantes.'"
+                (selected_id_change)="OnStudentSelected($event)">
+              </app-searchable-select>
+
+              @if (form.controls.student_id.touched && form.controls.student_id.invalid) {
+                <div class="text-danger small mt-1">
+                  Debe seleccionar un estudiante.
+                </div>
+              }
+            </div>
+
+            <div class="col-12">
+              <app-searchable-select
+                label="Profesor"
+                placeholder="Buscar profesor..."
+                [items]="professors"
+                [selected_id]="form.controls.professor_id.value"
+                [required]="true"
+                [empty_text]="'No se encontraron profesores.'"
+                (selected_id_change)="OnProfessorSelected($event)">
+              </app-searchable-select>
+
+              @if (form.controls.professor_id.touched && form.controls.professor_id.invalid) {
+                <div class="text-danger small mt-1">
+                  Debe seleccionar un profesor.
+                </div>
+              }
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="OnClose()">
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-dark"
+            (click)="OnSubmit()"
+            [disabled]="students.length === 0 || professors.length === 0">
+            @if (mode === 'create') {
+              Guardar
+            } @else {
+              Actualizar
+            }
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}
