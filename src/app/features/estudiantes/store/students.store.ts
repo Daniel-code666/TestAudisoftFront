@@ -218,4 +218,34 @@ export class StudentsStore {
       return false;
     }
   }
+
+  async ToggleStudentGrades(student: Student): Promise<void> {
+    const current_student = this.selected_student_for_detail();
+
+    if (current_student?.id === student.id) {
+      this.ClearStudentDetail();
+      return;
+    }
+
+    this.selected_student_for_detail.set(student);
+    this.selected_student_grades.set([]);
+    this.detail_error.set(null);
+
+    try {
+      const grades = await firstValueFrom(
+        this._grades_service.GetByStudentId(student.id)
+      );
+
+      this.selected_student_grades.set(grades ?? []);
+    } catch (error) {
+      this.selected_student_grades.set([]);
+      this.detail_error.set(GetHttpErrorMessage(error));
+    }
+  }
+
+  ClearStudentDetail(): void {
+    this.selected_student_for_detail.set(null);
+    this.selected_student_grades.set([]);
+    this.detail_error.set(null);
+  }
 }

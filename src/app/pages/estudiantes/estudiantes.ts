@@ -72,7 +72,7 @@ export class EstudiantesComponent implements OnInit {
       return;
     }
 
-    await this.students_store.ShowStudentGrades(student);
+    await this.students_store.ToggleStudentGrades(student);
   }
 
   OpenCreateModal(): void {

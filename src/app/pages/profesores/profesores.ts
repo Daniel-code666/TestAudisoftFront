@@ -72,7 +72,7 @@ export class ProfesoresComponent implements OnInit {
       return;
     }
 
-    await this.professors_store.ShowProfessorGrades(professor);
+    await this.professors_store.ToggleProfessorGrades(professor);
   }
 
   OpenCreateModal(): void {

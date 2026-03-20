@@ -134,7 +134,7 @@
                           type="button"
                           class="btn btn-sm btn-outline-dark"
                           (click)="OnShowDetail(professor.id)">
-                          Ver notas
+                          {{ professors_store.selected_professor_for_detail()?.id === professor.id ? 'Ocultar' : 'Mostrar' }} notas
                         </button>
                       </td>
                       <td class="text-center">

@@ -221,4 +221,34 @@ export class ProfessorsStore {
       return false;
     }
   }
+
+  async ToggleProfessorGrades(professor: Professor): Promise<void> {
+    const current_professor = this.selected_professor_for_detail();
+
+    if (current_professor?.id === professor.id) {
+      this.ClearProfessorDetail();
+      return;
+    }
+
+    this.selected_professor_for_detail.set(professor);
+    this.selected_professor_grades.set([]);
+    this.detail_error.set(null);
+
+    try {
+      const grades = await firstValueFrom(
+        this._grades_service.GetByProfessorId(professor.id)
+      );
+
+      this.selected_professor_grades.set(grades ?? []);
+    } catch (error) {
+      this.selected_professor_grades.set([]);
+      this.detail_error.set(GetHttpErrorMessage(error));
+    }
+  }
+
+  ClearProfessorDetail(): void {
+    this.selected_professor_for_detail.set(null);
+    this.selected_professor_grades.set([]);
+    this.detail_error.set(null);
+  }
 }

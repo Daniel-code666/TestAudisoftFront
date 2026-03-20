@@ -134,7 +134,7 @@
                           type="button"
                           class="btn btn-sm btn-outline-dark"
                           (click)="OnShowDetail(student.id)">
-                          Ver notas
+                          {{ students_store.selected_student_for_detail()?.id === student.id ? 'Ocultar' : 'Mostrar' }} notas
                         </button>
                       </td>
                       <td class="text-center">
