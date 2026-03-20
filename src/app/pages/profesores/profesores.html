@@ -208,7 +208,7 @@
       </div>
     </div>
 
-    <div class="col-12" *ngIf="professors_store.selected_professor() as selected_professor">
+    <div class="col-12" *ngIf="professors_store.selected_professor_for_detail() as selected_professor">
       <div class="card shadow-sm">
         <div class="card-header bg-secondary text-white">
           <h5 class="mb-0">
@@ -262,7 +262,7 @@
 <app-professor-form-modal
   [is_open]="is_form_modal_open()"
   [mode]="professors_store.modal_mode()"
-  [professor]="professors_store.selected_professor()"
+  [professor]="professors_store.selected_professor_for_edit()"
   [save_error]="professors_store.save_error()"
   (close)="CloseFormModal()"
   (create)="OnCreateProfessor($event)"

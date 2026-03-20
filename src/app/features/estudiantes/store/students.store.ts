@@ -16,7 +16,7 @@ import { GetHttpErrorMessage } from '../../../core/utils/http-error.utils';
 export class StudentsStore {
   private readonly _students_service = inject(StudentsService);
   private readonly _grades_service = inject(GradesService);
-  
+
   readonly save_success = signal<string | null>(null);
 
   readonly items = signal<Student[]>([]);
@@ -31,6 +31,9 @@ export class StudentsStore {
 
   readonly selected_student = signal<Student | null>(null);
   readonly selected_student_grades = signal<Grade[]>([]);
+
+  readonly selected_student_for_detail = signal<Student | null>(null);
+  readonly selected_student_for_edit = signal<Student | null>(null);
 
   readonly list_error = signal<string | null>(null);
   readonly detail_error = signal<string | null>(null);
@@ -73,7 +76,7 @@ export class StudentsStore {
   }
 
   async ShowStudentGrades(student: Student): Promise<void> {
-    this.selected_student.set(student);
+    this.selected_student_for_detail.set(student);
     this.selected_student_grades.set([]);
     this.detail_error.set(null);
 
@@ -130,13 +133,13 @@ export class StudentsStore {
   SetCreateMode(): void {
     this.modal_mode.set('create');
     this.save_error.set(null);
-    this.selected_student.set(null);
+    this.selected_student_for_edit.set(null);
   }
 
   SetEditMode(student: Student): void {
     this.modal_mode.set('edit');
     this.save_error.set(null);
-    this.selected_student.set(student);
+    this.selected_student_for_edit.set(student);
   }
 
   ClearMessages(): void {

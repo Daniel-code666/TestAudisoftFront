@@ -30,6 +30,9 @@ export class ProfessorsStore {
   readonly selected_professor = signal<Professor | null>(null);
   readonly selected_professor_grades = signal<Grade[]>([]);
 
+  readonly selected_professor_for_detail = signal<Professor | null>(null);
+  readonly selected_professor_for_edit = signal<Professor | null>(null);
+
   readonly list_error = signal<string | null>(null);
   readonly detail_error = signal<string | null>(null);
   readonly save_error = signal<string | null>(null);
@@ -72,7 +75,7 @@ export class ProfessorsStore {
   }
 
   async ShowProfessorGrades(professor: Professor): Promise<void> {
-    this.selected_professor.set(professor);
+    this.selected_professor_for_detail.set(professor);
     this.selected_professor_grades.set([]);
     this.detail_error.set(null);
 
@@ -130,14 +133,14 @@ export class ProfessorsStore {
     this.modal_mode.set('create');
     this.save_error.set(null);
     this.save_success.set(null);
-    this.selected_professor.set(null);
+    this.selected_professor_for_edit.set(null);
   }
 
   SetEditMode(professor: Professor): void {
     this.modal_mode.set('edit');
     this.save_error.set(null);
     this.save_success.set(null);
-    this.selected_professor.set(professor);
+    this.selected_professor_for_edit.set(professor);
   }
 
   ClearMessages(): void {

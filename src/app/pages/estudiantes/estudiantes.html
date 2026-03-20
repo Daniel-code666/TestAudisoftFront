@@ -208,7 +208,7 @@
       </div>
     </div>
 
-    <div class="col-12" *ngIf="students_store.selected_student() as selected_student">
+    <div class="col-12" *ngIf="students_store.selected_student_for_detail() as selected_student">
       <div class="card shadow-sm">
         <div class="card-header bg-secondary text-white">
           <h5 class="mb-0">
@@ -262,7 +262,7 @@
 <app-student-form-modal
   [is_open]="is_form_modal_open()"
   [mode]="students_store.modal_mode()"
-  [student]="students_store.selected_student()"
+  [student]="students_store.selected_student_for_edit()"
   [save_error]="students_store.save_error()"
   (close)="CloseFormModal()"
   (create)="OnCreateStudent($event)"
