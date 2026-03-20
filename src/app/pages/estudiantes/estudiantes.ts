@@ -15,11 +15,12 @@ import { StudentCreate } from '../../features/estudiantes/models/student-create.
 import { StudentUpdate } from '../../features/estudiantes/models/student-update.model';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal';
 import { ShowSuccessAlert } from '../../core/utils/alert.utils';
+import { ErrorModalComponent } from '../../shared/components/error-modal/error-modal';
 
 @Component({
   selector: 'app-estudiantes',
   standalone: true,
-  imports: [CommonModule, FormsModule, StudentFormModalComponent, ConfirmModalComponent],
+  imports: [CommonModule, FormsModule, StudentFormModalComponent, ConfirmModalComponent, ErrorModalComponent],
   templateUrl: './estudiantes.html',
   styleUrl: './estudiantes.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -27,6 +28,9 @@ import { ShowSuccessAlert } from '../../core/utils/alert.utils';
 export class EstudiantesComponent implements OnInit {
   readonly students_store = inject(StudentsStore);
   readonly loading_service = inject(LoadingService);
+
+  readonly is_error_modal_open = signal(false);
+  readonly error_modal_message = signal('');
 
   readonly is_loading = this.loading_service.is_loading;
   readonly is_form_modal_open = signal(false);
@@ -45,16 +49,28 @@ export class EstudiantesComponent implements OnInit {
 
   async OnApplyFilters(): Promise<void> {
     await this.students_store.ApplyFilters();
+
+    if (this.students_store.list_error()) {
+      this.OpenErrorModal(this.students_store.list_error()!);
+    }
   }
 
   async OnResetFilters(): Promise<void> {
     this.students_store.ResetFilters();
     await this.students_store.LoadStudents();
+
+    if (this.students_store.list_error()) {
+      this.OpenErrorModal(this.students_store.list_error()!);
+    }
   }
 
   async OnPageChange(page: number): Promise<void> {
     this.students_store.GoToPage(page);
     await this.students_store.LoadStudents();
+
+    if (this.students_store.list_error()) {
+      this.OpenErrorModal(this.students_store.list_error()!);
+    }
   }
 
   async OnPageSizeChange(event: Event): Promise<void> {
@@ -63,6 +79,10 @@ export class EstudiantesComponent implements OnInit {
 
     this.students_store.SetPageSize(value);
     await this.students_store.LoadStudents();
+
+    if (this.students_store.list_error()) {
+      this.OpenErrorModal(this.students_store.list_error()!);
+    }
   }
 
   async OnShowDetail(student_id: number): Promise<void> {
@@ -73,6 +93,10 @@ export class EstudiantesComponent implements OnInit {
     }
 
     await this.students_store.ToggleStudentGrades(student);
+
+    if (this.students_store.detail_error()) {
+      this.OpenErrorModal(this.students_store.detail_error()!);
+    }
   }
 
   OpenCreateModal(): void {
@@ -104,6 +128,10 @@ export class EstudiantesComponent implements OnInit {
       this.students_store.ClearMessages();
       await ShowSuccessAlert('Regsitro creado', 'El estudiante ha sido creado exitosamente.');
     }
+
+    if (this.students_store.save_error()) {
+      this.OpenErrorModal(this.students_store.save_error()!);
+    }
   }
 
   async OnUpdateStudent(student_to_update: StudentUpdate): Promise<void> {
@@ -113,6 +141,10 @@ export class EstudiantesComponent implements OnInit {
       this.is_form_modal_open.set(false);
       this.students_store.ClearMessages();
       await ShowSuccessAlert('Regsitro actualizado', 'El estudiante ha sido actualizado exitosamente.');
+    }
+
+    if (this.students_store.save_error()) {
+      this.OpenErrorModal(this.students_store.save_error()!);
     }
   }
 
@@ -140,6 +172,10 @@ export class EstudiantesComponent implements OnInit {
       this.students_store.ClearMessages();
       await ShowSuccessAlert('Registro eliminado', 'El estudiante ha sido eliminado exitosamente.');
     }
+
+    if (this.students_store.save_error()) {
+      this.OpenErrorModal(this.students_store.save_error()!);
+    }
   }
 
   async OnDeleteStudent(student_id: number): Promise<void> {
@@ -150,5 +186,17 @@ export class EstudiantesComponent implements OnInit {
     }
 
     await this.students_store.DeleteStudent(student_id);
+  }
+
+  OpenErrorModal(message: string): void {
+    this.CloseFormModal();
+    this.error_modal_message.set(message);
+    this.is_error_modal_open.set(true);
+  }
+
+  CloseErrorModal(): void {
+    this.error_modal_message.set('');
+    this.is_error_modal_open.set(false);
+    this.students_store.ClearMessages();
   }
 }

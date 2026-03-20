@@ -16,11 +16,12 @@ import { GradeUpdate } from '../../features/notas/models/grade-update.model';
 import { SearchableSelectItem } from '../../shared/components/searchable-text/searchable-select';
 import { ConfirmModalComponent } from '../../shared/components/confirm-modal/confirm-modal';
 import { ShowSuccessAlert } from '../../core/utils/alert.utils';
+import { ErrorModalComponent } from '../../shared/components/error-modal/error-modal';
 
 @Component({
   selector: 'app-notas',
   standalone: true,
-  imports: [CommonModule, FormsModule, GradeFormModalComponent, ConfirmModalComponent],
+  imports: [CommonModule, FormsModule, GradeFormModalComponent, ConfirmModalComponent, ErrorModalComponent],
   templateUrl: './notas.html',
   styleUrl: './notas.css',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -34,6 +35,9 @@ export class NotasComponent implements OnInit {
 
   readonly is_delete_modal_open = signal(false);
   readonly grade_id_to_delete = signal<number | null>(null);
+
+  readonly is_error_modal_open = signal(false);
+  readonly error_modal_message = signal('');
 
   readonly pages = computed(() => {
     const total_pages = this.grades_store.total_pages();
@@ -60,16 +64,28 @@ export class NotasComponent implements OnInit {
 
   async OnApplyFilters(): Promise<void> {
     await this.grades_store.ApplyFilters();
+
+    if (this.grades_store.list_error()) {
+      this.OpenErrorModal(this.grades_store.list_error()!);
+    }
   }
 
   async OnResetFilters(): Promise<void> {
     this.grades_store.ResetFilters();
     await this.grades_store.LoadGrades();
+
+    if (this.grades_store.list_error()) {
+      this.OpenErrorModal(this.grades_store.list_error()!);
+    }
   }
 
   async OnPageChange(page: number): Promise<void> {
     this.grades_store.GoToPage(page);
     await this.grades_store.LoadGrades();
+
+    if (this.grades_store.list_error()) {
+      this.OpenErrorModal(this.grades_store.list_error()!);
+    }
   }
 
   async OnPageSizeChange(event: Event): Promise<void> {
@@ -78,6 +94,10 @@ export class NotasComponent implements OnInit {
 
     this.grades_store.SetPageSize(value);
     await this.grades_store.LoadGrades();
+
+    if (this.grades_store.list_error()) {
+      this.OpenErrorModal(this.grades_store.list_error()!);
+    }
   }
 
   async OpenCreateModal(): Promise<void> {
@@ -109,6 +129,10 @@ export class NotasComponent implements OnInit {
       this.grades_store.ClearMessages();
       await ShowSuccessAlert('Regsitro creado', 'La nota ha sido creada exitosamente.');
     }
+
+    if (this.grades_store.save_error()) {
+      this.OpenErrorModal(this.grades_store.save_error()!);
+    }
   }
 
   async OnUpdateGrade(grade_to_update: GradeUpdate): Promise<void> {
@@ -118,6 +142,10 @@ export class NotasComponent implements OnInit {
       this.is_form_modal_open.set(false);
       this.grades_store.ClearMessages();
       await ShowSuccessAlert('Regsitro actualizado', 'La nota ha sido actualizada exitosamente.');
+    }
+
+    if (this.grades_store.save_error()) {
+      this.OpenErrorModal(this.grades_store.save_error()!);
     }
   }
 
@@ -155,5 +183,16 @@ export class NotasComponent implements OnInit {
     }
 
     await this.grades_store.DeleteGrade(grade_id);
+  }
+
+  OpenErrorModal(message: string): void {
+    this.error_modal_message.set(message);
+    this.is_error_modal_open.set(true);
+  }
+
+  CloseErrorModal(): void {
+    this.error_modal_message.set('');
+    this.is_error_modal_open.set(false);
+    this.grades_store.ClearMessages();
   }
 }

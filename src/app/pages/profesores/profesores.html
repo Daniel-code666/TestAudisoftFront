@@ -83,30 +83,12 @@
             </div>
           </div>
 
-          @if (professors_store.list_error()) {
-            <div class="alert alert-danger mt-3 mb-0">
-              {{ professors_store.list_error() }}
-            </div>
-          }
-
           <div class="table-responsive mt-3 position-relative">
             @if (is_loading()) {
               <div class="loading-overlay d-flex align-items-center justify-content-center">
                 <div class="spinner-border text-dark" role="status">
                   <span class="visually-hidden">Cargando...</span>
                 </div>
-              </div>
-            }
-
-            @if (professors_store.save_success()) {
-              <div class="alert alert-success mt-3">
-                {{ professors_store.save_success() }}
-              </div>
-            }
-
-            @if (professors_store.save_error()) {
-              <div class="alert alert-danger mt-3">
-                {{ professors_store.save_error() }}
               </div>
             }
 
@@ -279,3 +261,10 @@
   (close)="CloseDeleteModal()"
   (confirm)="ConfirmDeleteProfessor()">
 </app-confirm-modal>
+
+<app-error-modal
+  [is_open]="is_error_modal_open()"
+  [title]="'Error'"
+  [message]="error_modal_message()"
+  (close)="CloseErrorModal()">
+</app-error-modal>
