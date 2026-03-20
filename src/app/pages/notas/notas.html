@@ -157,7 +157,7 @@
 <app-grade-form-modal [is_open]="is_form_modal_open()" [mode]="grades_store.modal_mode()"
   [grade]="grades_store.selected_grade()" [students]="student_options()" [professors]="professor_options()"
   [catalogs_error]="grades_store.catalogs_error()" [save_error]="grades_store.save_error()"
-  [save_success]="grades_store.save_success()" (close)="CloseFormModal()" (create)="OnCreateGrade($event)"
+  (close)="CloseFormModal()" (create)="OnCreateGrade($event)"
   (update)="OnUpdateGrade($event)">
 </app-grade-form-modal>
 

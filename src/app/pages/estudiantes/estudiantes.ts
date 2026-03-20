@@ -101,8 +101,8 @@ export class EstudiantesComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
-      await ShowSuccessAlert('Regsitro creado', 'El estudiante ha sido creado exitosamente.');
       this.students_store.ClearMessages();
+      await ShowSuccessAlert('Regsitro creado', 'El estudiante ha sido creado exitosamente.');
     }
   }
 
@@ -112,6 +112,7 @@ export class EstudiantesComponent implements OnInit {
     if (success) {
       this.is_form_modal_open.set(false);
       this.students_store.ClearMessages();
+      await ShowSuccessAlert('Regsitro actualizado', 'El estudiante ha sido actualizado exitosamente.');
     }
   }
 
@@ -136,6 +137,8 @@ export class EstudiantesComponent implements OnInit {
 
     if (success) {
       this.CloseDeleteModal();
+      this.students_store.ClearMessages();
+      await ShowSuccessAlert('Registro eliminado', 'El estudiante ha sido eliminado exitosamente.');
     }
   }
 

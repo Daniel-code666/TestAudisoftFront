@@ -33,7 +33,6 @@ export class ProfessorFormModalComponent implements OnChanges {
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() professor: Professor | null = null;
   @Input() save_error: string | null = null;
-  @Input() save_success: string | null = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() create = new EventEmitter<ProfessorCreate>();

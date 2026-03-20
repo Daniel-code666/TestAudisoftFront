@@ -101,8 +101,8 @@ export class ProfesoresComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
-      await ShowSuccessAlert('Registro creado', 'El profesor ha sido creado exitosamente.');
       this.professors_store.ClearMessages();
+      await ShowSuccessAlert('Registro creado', 'El profesor ha sido creado exitosamente.');
     }
   }
 
@@ -112,6 +112,7 @@ export class ProfesoresComponent implements OnInit {
     if (success) {
       this.is_form_modal_open.set(false);
       this.professors_store.ClearMessages();
+      await ShowSuccessAlert('Registro actualizado', 'El profesor ha sido actualizado exitosamente.');
     }
   }
 
@@ -136,6 +137,8 @@ export class ProfesoresComponent implements OnInit {
 
     if (success) {
       this.CloseDeleteModal();
+      this.professors_store.ClearMessages();
+      await ShowSuccessAlert('Registro eliminado', 'El profesor ha sido eliminado exitosamente.');
     }
   }
 

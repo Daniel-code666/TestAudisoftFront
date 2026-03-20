@@ -33,7 +33,6 @@ export class StudentFormModalComponent implements OnChanges {
   @Input() mode: 'create' | 'edit' = 'create';
   @Input() student: Student | null = null;
   @Input() save_error: string | null = null;
-  @Input() save_success: string | null = null;
 
   @Output() close = new EventEmitter<void>();
   @Output() create = new EventEmitter<StudentCreate>();

@@ -39,7 +39,6 @@ export class GradeFormModalComponent implements OnChanges {
   @Input() students: SearchableSelectItem[] = [];
   @Input() professors: SearchableSelectItem[] = [];
   @Input() save_error: string | null = null;
-  @Input() save_success: string | null = null;
   @Input() catalogs_error: string | null = null;
 
   @Output() close = new EventEmitter<void>();

@@ -16,6 +16,8 @@ import { GetHttpErrorMessage } from '../../../core/utils/http-error.utils';
 export class StudentsStore {
   private readonly _students_service = inject(StudentsService);
   private readonly _grades_service = inject(GradesService);
+  
+  readonly save_success = signal<string | null>(null);
 
   readonly items = signal<Student[]>([]);
   readonly total_records = signal(0);
@@ -33,7 +35,6 @@ export class StudentsStore {
   readonly list_error = signal<string | null>(null);
   readonly detail_error = signal<string | null>(null);
   readonly save_error = signal<string | null>(null);
-  readonly save_success = signal<string | null>(null);
 
   readonly modal_mode = signal<'create' | 'edit'>('create');
 
@@ -129,14 +130,12 @@ export class StudentsStore {
   SetCreateMode(): void {
     this.modal_mode.set('create');
     this.save_error.set(null);
-    this.save_success.set(null);
     this.selected_student.set(null);
   }
 
   SetEditMode(student: Student): void {
     this.modal_mode.set('edit');
     this.save_error.set(null);
-    this.save_success.set(null);
     this.selected_student.set(student);
   }
 
@@ -147,7 +146,6 @@ export class StudentsStore {
 
   async CreateStudent(student_to_create: StudentCreate): Promise<boolean> {
     this.save_error.set(null);
-    this.save_success.set(null);
 
     try {
       const response = await firstValueFrom(
@@ -155,7 +153,6 @@ export class StudentsStore {
       );
 
       if (response === DbActions.Created) {
-        this.save_success.set('Estudiante creado correctamente.');
         await this.LoadStudents();
         return true;
       }
@@ -170,7 +167,6 @@ export class StudentsStore {
 
   async UpdateStudent(student_to_update: StudentUpdate): Promise<boolean> {
     this.save_error.set(null);
-    this.save_success.set(null);
 
     try {
       const response = await firstValueFrom(
@@ -178,7 +174,6 @@ export class StudentsStore {
       );
 
       if (response === DbActions.Updated) {
-        this.save_success.set('Estudiante actualizado correctamente.');
         await this.LoadStudents();
         return true;
       }
@@ -198,15 +193,12 @@ export class StudentsStore {
 
   async DeleteStudent(id: number): Promise<boolean> {
     this.save_error.set(null);
-    this.save_success.set(null);
-
     try {
       const response = await firstValueFrom(
         this._students_service.Delete(id)
       );
 
       if (response === DbActions.Updated || response === DbActions.Created) {
-        this.save_success.set('Estudiante eliminado correctamente.');
         await this.LoadStudents();
         return true;
       }
@@ -216,7 +208,6 @@ export class StudentsStore {
         return false;
       }
 
-      this.save_success.set('Estudiante eliminado correctamente.');
       await this.LoadStudents();
       return true;
     } catch (error) {

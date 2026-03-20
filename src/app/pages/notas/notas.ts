@@ -106,8 +106,8 @@ export class NotasComponent implements OnInit {
 
     if (success) {
       this.is_form_modal_open.set(false);
-      await ShowSuccessAlert('Regsitro creado', 'La nota ha sido creada exitosamente.');
       this.grades_store.ClearMessages();
+      await ShowSuccessAlert('Regsitro creado', 'La nota ha sido creada exitosamente.');
     }
   }
 
@@ -117,6 +117,7 @@ export class NotasComponent implements OnInit {
     if (success) {
       this.is_form_modal_open.set(false);
       this.grades_store.ClearMessages();
+      await ShowSuccessAlert('Regsitro actualizado', 'La nota ha sido actualizada exitosamente.');
     }
   }
 
@@ -141,6 +142,8 @@ export class NotasComponent implements OnInit {
 
     if (success) {
       this.CloseDeleteModal();
+      this.grades_store.ClearMessages();
+      await ShowSuccessAlert('Registro eliminado', 'La nota ha sido eliminada exitosamente.');
     }
   }
 
