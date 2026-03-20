@@ -190,6 +190,7 @@ export class EstudiantesComponent implements OnInit {
 
   OpenErrorModal(message: string): void {
     this.CloseFormModal();
+    this.CloseDeleteModal();
     this.error_modal_message.set(message);
     this.is_error_modal_open.set(true);
   }

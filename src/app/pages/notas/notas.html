@@ -53,12 +53,6 @@
             </div>
           </div>
 
-          @if (grades_store.list_error()) {
-          <div class="alert alert-danger mt-3 mb-0">
-            {{ grades_store.list_error() }}
-          </div>
-          }
-
           <div class="table-responsive mt-3 position-relative">
             @if (is_loading()) {
             <div class="loading-overlay d-flex align-items-center justify-content-center">
@@ -66,18 +60,6 @@
                 <span class="visually-hidden">Cargando...</span>
               </div>
             </div>
-            }
-
-            @if (grades_store.save_success()) {
-              <div class="alert alert-success mt-3">
-                {{ grades_store.save_success() }}
-              </div>
-            }
-
-            @if (grades_store.save_error()) {
-              <div class="alert alert-danger mt-3">
-                {{ grades_store.save_error() }}
-              </div>
             }
 
             <table class="table table-bordered table-hover align-middle mb-0">
@@ -171,3 +153,11 @@
   (close)="CloseDeleteModal()"
   (confirm)="ConfirmDeleteGrade()">
 </app-confirm-modal>
+
+<app-error-modal
+  [is_open]="is_error_modal_open()"
+  [title]="'Error'"
+  [message]="error_modal_message()"
+  (close)="CloseErrorModal()"
+>
+</app-error-modal>
