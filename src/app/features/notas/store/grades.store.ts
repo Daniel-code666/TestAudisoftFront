@@ -178,9 +178,7 @@ export class GradesStore {
     this.catalogs_error.set(null);
     this.selected_grade.set(null);
 
-    if (this.students_catalog().length === 0 || this.professors_catalog().length === 0) {
-      await this.LoadCatalogs();
-    }
+    await this.LoadCatalogs();
   }
 
   async SetEditMode(grade: Grade): Promise<void> {
@@ -190,9 +188,7 @@ export class GradesStore {
     this.catalogs_error.set(null);
     this.selected_grade.set(grade);
 
-    if (this.students_catalog().length === 0 || this.professors_catalog().length === 0) {
-      await this.LoadCatalogs();
-    }
+    await this.LoadCatalogs();
   }
 
   ClearMessages(): void {
